@@ -67,7 +67,7 @@ export const About = () => {
               <div className="relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-3 lg:p-4 hover:border-cyan-400/50 transition-all duration-300">
                 <img
                   src={akitha2Image}
-                  alt="Akitha - Professional Photo"
+                  alt="Portfolio Project: By Akitha Chanupama"
                   className="w-full h-64 sm:h-72 lg:h-80 object-cover rounded-xl"
                 />
               </div>
