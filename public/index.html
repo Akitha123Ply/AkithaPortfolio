@@ -10,34 +10,115 @@
       content="Web site created using create-react-app"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <title>Akitha Chanupama</title>
+    <!-- Tailwind CDN for styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Smooth fade animation for loading text */
+      .fade-text {
+        transition: opacity 0.5s ease-in-out;
+      }
+      .fade-out {
+        opacity: 0;
+      }
+      .fade-in {
+        opacity: 1;
+      }
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+      /* Preloader fade-out */
+      #preloader {
+        transition: opacity 0.8s ease;
+      }
+      #preloader.hidden {
+        opacity: 0;
+        pointer-events: none; /* allows clicks to pass through */
+      }
+    </style>
   </head>
-  <body>
+  <body class="bg-gray-900">
     <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <!-- Preloader -->
+    <div
+      id="preloader"
+      class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-slate-900 to-black z-50 overflow-hidden"
+    >
+      <!-- Floating Orbs -->
+      <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-cyan-400/10 to-blue-600/10 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-400/10 to-purple-600/10 rounded-full blur-3xl"></div>
+
+      <!-- Spinning Loader -->
+      <div class="relative w-20 h-20">
+        <div class="absolute inset-0 border-4 border-transparent border-t-cyan-400 rounded-full animate-spin"></div>
+        <div class="absolute inset-3 border-4 border-transparent border-t-blue-500 rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
+        <div class="absolute inset-6 border-4 border-transparent border-t-purple-500 rounded-full animate-spin"></div>
+      </div>
+
+      <!-- Loading Text -->
+      <p
+        id="preloader-text"
+        class="mt-6 text-lg font-mono text-gray-300 tracking-wide fade-text"
+      >
+        COMPILING AWESOMENESS...
+      </p>
+    </div>
+
+    <!-- React Root -->
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- Preloader script -->
+    <script>
+      const messages = [
+        "COMPILING AWESOMENESS...",
+        "SPINNING UP FUNCTIONS...",
+        "INJECTING AWESOME...",
+        "ALMOST READY..."
+      ];
+      let index = 0;
+      const textEl = document.getElementById('preloader-text');
+      const preloader = document.getElementById('preloader');
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+      // Cycle messages with smooth fade
+      const interval = setInterval(() => {
+        if (textEl) {
+          textEl.classList.remove("fade-in");
+          textEl.classList.add("fade-out");
+
+          setTimeout(() => {
+            textEl.textContent = messages[index];
+            textEl.classList.remove("fade-out");
+            textEl.classList.add("fade-in");
+            index = (index + 1) % messages.length;
+          }, 500);
+        }
+      }, 1200);
+
+      // Remove preloader when React mounts with fade-out
+      window.addEventListener('DOMContentLoaded', () => {
+        const rootEl = document.getElementById('root');
+
+        const observer = new MutationObserver(() => {
+          if (rootEl.childNodes.length) {
+            preloader.classList.add('hidden'); // fade out
+
+            // Stop cycling text
+            clearInterval(interval);
+
+            // Remove preloader from DOM after fade
+            setTimeout(() => {
+              if (preloader.parentNode) {
+                preloader.parentNode.removeChild(preloader);
+              }
+            }, 800); // match CSS transition
+
+            observer.disconnect();
+          }
+        });
+
+        observer.observe(rootEl, { childList: true });
+      });
+    </script>
   </body>
 </html>
+
