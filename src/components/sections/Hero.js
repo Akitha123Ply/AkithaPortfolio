@@ -200,7 +200,7 @@ export const Hero = () => {
               <div className="relative">
                 <img
                   src={akithaImage}
-                  alt="Akitha"
+                  alt="Portfolio Project by Akitha Chanupama"
                   className="w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-2xl object-cover border-2 border-gray-700/50 shadow-2xl transform hover:scale-105 transition-all duration-500"
                 />
               </div>
