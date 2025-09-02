@@ -197,7 +197,7 @@ export const Blog = () => {
         {/* View All Button */}
         <div className="text-center mt-12">
           <a 
-            href="https://yourpersonalblog.com/all-articles" 
+            href="https://theconversation.com/topics/information-technology-3215" 
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl px-8 py-4 text-white font-semibold hover:border-cyan-400/50 hover:text-cyan-400 transition-all duration-300 group"
