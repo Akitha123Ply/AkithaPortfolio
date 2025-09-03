@@ -13,6 +13,7 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNav, setActiveNav] = useState('');
   const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // For now, using the same logo. Replace 'logo' with 'hoverLogo' when you have the hover image
   const currentLogo = isLogoHovered ? logo : logo;
@@ -29,6 +30,11 @@ export const Header = () => {
   ];
 
   useEffect(() => {
+    // Trigger loading animation after component mounts
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
@@ -52,7 +58,11 @@ export const Header = () => {
 
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // set initial
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleDownloadCV = () => {
@@ -77,9 +87,9 @@ export const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled ? 'bg-white/5 dark:bg-gray-900/5 backdrop-blur-lg' : ''
-      }`}
+      } ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
@@ -89,7 +99,11 @@ export const Header = () => {
               onClick={handleLogoClick}
               onMouseEnter={() => setIsLogoHovered(true)}
               onMouseLeave={() => setIsLogoHovered(false)}
-              className="focus:outline-none transition-all duration-500 ease-in-out hover:scale-110 hover:rotate-3 hover:brightness-110"
+              className={`focus:outline-none transition-all duration-700 ease-out hover:scale-110 hover:rotate-3 hover:brightness-110 ${
+                isLoaded 
+                  ? 'translate-x-0 opacity-100 scale-100' 
+                  : '-translate-x-8 opacity-0 scale-75'
+              }`}
               aria-label="Go to home"
             >
               <img 
@@ -106,14 +120,21 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex space-x-6 xl:space-x-8">
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <a
                 key={item.name}
                 href={item.href}
                 onClick={() => setActiveNav(item.href)}
                 className={`${
                   activeNav === item.href ? 'text-blue-500' : 'text-white'
-                } hover:text-blue-500 transition-colors font-medium text-sm xl:text-base`}
+                } hover:text-blue-500 transition-all duration-500 font-medium text-sm xl:text-base ${
+                  isLoaded 
+                    ? 'translate-y-0 opacity-100' 
+                    : '-translate-y-4 opacity-0'
+                }`}
+                style={{
+                  transitionDelay: `${200 + index * 50}ms`
+                }}
               >
                 {item.name}
               </a>
@@ -125,7 +146,14 @@ export const Header = () => {
             <Button
               variant="primary"
               size="sm"
-              className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-primary-700 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium px-3 sm:px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 text-sm"
+              className={`hidden sm:flex items-center space-x-2 bg-gradient-to-r from-primary-700 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium px-3 sm:px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-700 transform hover:scale-105 text-sm ${
+                isLoaded 
+                  ? 'translate-x-0 opacity-100 scale-100' 
+                  : 'translate-x-8 opacity-0 scale-75'
+              }`}
+              style={{
+                transitionDelay: '300ms'
+              }}
               onClick={handleDownloadCV}
             >
               <FiDownload className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -136,28 +164,49 @@ export const Header = () => {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-white/10 dark:hover:bg-gray-800/50 text-white transition-colors"
+              className={`lg:hidden p-2 rounded-lg hover:bg-white/10 dark:hover:bg-gray-800/50 text-white transition-all duration-700 hover:scale-110 ${
+                isLoaded 
+                  ? 'translate-x-0 opacity-100 scale-100 rotate-0' 
+                  : 'translate-x-8 opacity-0 scale-75 rotate-90'
+              }`}
+              style={{
+                transitionDelay: '400ms'
+              }}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <FiX className="w-5 h-5 sm:w-6 sm:h-6" /> : <FiMenu className="w-5 h-5 sm:w-6 sm:h-6" />}
+              {isMenuOpen ? 
+                <FiX className="w-5 h-5 sm:w-6 sm:h-6 transform transition-transform duration-300 rotate-90" /> : 
+                <FiMenu className="w-5 h-5 sm:w-6 sm:h-6 transform transition-transform duration-300" />
+              }
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="lg:hidden bg-white/10 dark:bg-gray-900/10 backdrop-blur-lg border-t border-white/10 dark:border-gray-800/30">
-          <div className="px-3 sm:px-4 pt-2 pb-3 space-y-1 max-h-screen overflow-y-auto">
-            {navItems.map((item) => (
+      <div className={`lg:hidden overflow-hidden transition-all duration-500 ease-out ${
+        isMenuOpen 
+          ? 'max-h-screen opacity-100 transform translate-y-0' 
+          : 'max-h-0 opacity-0 transform -translate-y-4'
+      }`}>
+        <div className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-lg border-t border-white/10 dark:border-gray-800/30">
+          <div className="px-3 sm:px-4 pt-2 pb-3 space-y-1 overflow-y-auto">
+            {navItems.map((item, index) => (
               <a
                 key={item.name}
                 href={item.href}
-                className={`block px-3 py-3 text-base font-medium rounded-md transition-colors ${
+                className={`block px-3 py-3 text-base font-medium rounded-md transition-all duration-500 ease-out ${
                   activeNav === item.href 
                     ? 'text-blue-500 bg-blue-500/10' 
                     : 'text-white hover:text-blue-500'
-                } hover:bg-white/10 dark:hover:bg-gray-800/50`}
+                } hover:bg-white/10 dark:hover:bg-gray-800/50 hover:transform hover:translate-x-2 hover:scale-105 ${
+                  isMenuOpen 
+                    ? 'translate-x-0 opacity-100' 
+                    : '-translate-x-8 opacity-0'
+                }`}
+                style={{
+                  transitionDelay: `${index * 50}ms`
+                }}
                 onClick={() => {
                   setActiveNav(item.href);
                   setIsMenuOpen(false);
@@ -166,23 +215,30 @@ export const Header = () => {
                 {item.name}
               </a>
             ))}
-            <div className="px-3 py-2 sm:hidden">
+            <div className={`px-3 py-2 sm:hidden transition-all duration-600 ease-out ${
+              isMenuOpen 
+                ? 'translate-y-0 opacity-100 scale-100' 
+                : 'translate-y-4 opacity-0 scale-95'
+            }`}
+            style={{
+              transitionDelay: `${navItems.length * 50}ms`
+            }}>
               <Button
                 variant="primary"
                 size="sm"
-                className="w-full justify-center bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                className="w-full justify-center bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 hover:rotate-1"
                 onClick={() => {
                   handleDownloadCV();
                   setIsMenuOpen(false);
                 }}
               >
-                <FiDownload className="w-4 h-4 mr-2" />
+                <FiDownload className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:bounce" />
                 Download CV
               </Button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
