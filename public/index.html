@@ -41,23 +41,41 @@
 
     <!-- Structured Data (JSON-LD for Google) -->
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "name": "Akitha Chanupama",
+      "url": "https://akithachanupama.com",
+      "sameAs": [
+        "https://www.linkedin.com/in/akitha-chanupama-478b4126b",
+        "https://github.com/Akitha123Ply"
+      ],
+      "jobTitle": "Full-Stack Developer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Freelance / Portfolio"
+      },
+      "image": "https://akithachanupama.com/logo192.png"
+    },
+    {
+      "@type": "WebSite",
+      "url": "https://akithachanupama.com",
+      "name": "Akitha Chanupama Portfolio",
+      "publisher": {
         "@type": "Person",
-        "name": "Akitha Chanupama",
-        "url": "https://akithachanupama.com",
-        "sameAs": [
-          "https://www.linkedin.com/in/akitha-chanupama-478b4126b",
-          "https://github.com/Akitha123Ply"
-        ],
-        "jobTitle": "Full-Stack Developer",
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Freelance / Portfolio"
-        },
-        "image": "https://akithachanupama.com/logo192.png"
+        "name": "Akitha Chanupama"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://akithachanupama.com/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
       }
-    </script>
+    }
+  ]
+}
+</script>
 
     <!-- Apple Touch Icon & Manifest -->
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
