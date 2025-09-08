@@ -108,7 +108,7 @@ export const Header = () => {
             >
               <img 
                 src={currentLogo} 
-                alt="Logo" 
+                alt="Akitha Chanupama Logo" 
                 className={`h-8 sm:h-10 w-auto transition-all duration-500 ease-in-out transform ${
                   isLogoHovered 
                     ? 'filter drop-shadow-lg brightness-110 saturate-150' 
